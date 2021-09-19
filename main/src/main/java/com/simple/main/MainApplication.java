@@ -22,7 +22,7 @@ public class MainApplication {
 		Map<String,List<String>> data = getData();
 		getAll(data);
 	}
-	public Map<String,List<String>> getData(){
+	public static Map<String,List<String>> getData(){
 		String url = "https://raw.githubusercontent.com/mlenze/CodingExcercise-Java/main/apidata.json";
 		
 		Map<String,List<String>> DogTypes = new HashMap<>();
@@ -36,7 +36,7 @@ public class MainApplication {
 
 		return DogTypes;
 	}
-	public Map<String,List<String>> getAll(Map<String,List<String>> data){
+	public static Map<String,List<String>> getAll(Map<String,List<String>> data){
 		String url = "https://dog.ceo/api/breeds/list/all";
 		
 		Map<String,List<String>> DogTypes2 = new HashMap<>();
