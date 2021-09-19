@@ -19,31 +19,35 @@ public class MainApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MainApplication.class, args);
+		Map<String,List<String>> data = getData();
+		getAll(data);
+	}
+	public Map<String,List<String>> getData(){
 		String url = "https://raw.githubusercontent.com/mlenze/CodingExcercise-Java/main/apidata.json";
-		String urlAll = "https://dog.ceo/api/breeds/list/all";
-		//RestTemplate rs = new RestTemplate();
-/*
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
-
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
-*/
+		
 		Map<String,List<String>> DogTypes = new HashMap<>();
 		RestTemplate restTemplate = new RestTemplate();
-		/*map = restTemplate.getForObject(url, Map.class);		
-		System.out.print(map);	*/
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		HttpEntity entity = new HttpEntity();
 
 		DogTypes = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String,List<String>>>() {});
 
+		return DogTypes;
+	}
+	public Map<String,List<String>> getAll(Map<String,List<String>> data){
+		String url = "https://dog.ceo/api/breeds/list/all";
+		
 		Map<String,List<String>> DogTypes2 = new HashMap<>();
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		HttpEntity entity = new HttpEntity();
 		
 		UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(url)
-        .queryParam("message", DogTypes)
+        .queryParam("message", data)
         .queryParam("state", "success");
 
 		HttpEntity<?> entity2 = new HttpEntity<>(headers);
@@ -53,8 +57,5 @@ public class MainApplication {
 				HttpMethod.GET, 
 				entity, 
 				new ParameterizedTypeReference<Map<String,List<String>>>() {});
-
 	}
-
-	
 }
