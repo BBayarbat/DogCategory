@@ -10,7 +10,7 @@ public class MainApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MainApplication.class, args);
-		Map<String,List<String>> data = DogManager.getData();
+		Map<String,Object> data = DogManager.getData();
 		DogManager.getAll(data);
 	}	
 }

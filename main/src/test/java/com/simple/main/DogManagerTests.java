@@ -10,8 +10,9 @@ import org.junit.jupiter.api.Test;
 public class DogManagerTests {
     @Test
     void testGetAll() {
-        Map<String,List<String>> data = DogManager.getData();
+        Map<String,Object> data = DogManager.getData();
         assertTrue(DogManager.getAll(data).size() > 0);
+        
     }
 
     @Test

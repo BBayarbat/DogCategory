@@ -1,52 +1,56 @@
 package com.simple.main;
+import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.core.ParameterizedTypeReference;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
 public class DogManager {
     
-    public static Map<String,List<String>> getData(){
+    public static Map<String,Object> getData(){
 		String url = "https://raw.githubusercontent.com/mlenze/CodingExcercise-Java/main/apidata.json";
 		
-		Map<String,List<String>> DogTypes = new HashMap<>();
+		RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(url,String.class);
+
+		Type mapTokenType = new TypeToken<Map<String, Object>>(){}.getType();
+        Map<String, Object> DogTypes = new Gson().fromJson(response, mapTokenType);
+		
+		return DogTypes;    
+	}
+
+  
+
+	public static Map<String,Object> getAll(Map<String,Object> data){
+		String url = "https://dog.ceo/api/breeds/list/all";		
 		RestTemplate restTemplate = new RestTemplate();
 
+		// create headers
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity entity = new HttpEntity();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		headers.set("message", data.toString());
+		HttpEntity request = new HttpEntity(headers);
+		ResponseEntity<String> response = restTemplate.exchange(
+				url,
+				HttpMethod.GET,
+				request,
+				String.class,
+				1
+		);
 
-		DogTypes = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String,List<String>>>() {});
+		Type mapTokenType = new TypeToken<Map<String, Object>>(){}.getType();
+        Map<String, Object> DogTypes = new Gson().fromJson(response.getBody(), mapTokenType);
 
 		return DogTypes;
-	}
-	public static Map<String,List<String>> getAll(Map<String,List<String>> data){
-		String url = "https://dog.ceo/api/breeds/list/all";
-		
-		Map<String,List<String>> DogTypes2 = new HashMap<>();
-		RestTemplate restTemplate = new RestTemplate();
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity entity = new HttpEntity();
-		
-		UriComponentsBuilder builder2 = UriComponentsBuilder.fromHttpUrl(url)
-        .queryParam("message", data)
-        .queryParam("state", "success");
-
-		HttpEntity<?> entity2 = new HttpEntity<>(headers);
-
-		DogTypes2 = restTemplate.exchange(
-				builder2.toUriString(), 
-				HttpMethod.GET, 
-				entity, 
-				new ParameterizedTypeReference<Map<String,List<String>>>() {});
 	}
 }
